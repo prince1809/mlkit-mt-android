@@ -1,6 +1,9 @@
 package com.princekr.android.ml.md;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,30 +41,31 @@ public class EntryChoiceActivity extends AppCompatActivity {
         RecyclerView entryRecyclerView = findViewById(R.id.entry_recycler_view);
         entryRecyclerView.setHasFixedSize(true);
         entryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        entryRecyclerView.setAdapter(new EntryItemAdapter(EntryMode.values()));
     }
 
     private class EntryItemAdapter extends RecyclerView.Adapter<EntryItemAdapter.EntryItemViewHolder> {
 
-        private final EntryMode[] EntryModes;
+        private final EntryMode[] entryModes;
 
         public EntryItemAdapter(EntryMode[] entryModes) {
-            EntryModes = entryModes;
+            this.entryModes = entryModes;
         }
 
         @NonNull
         @Override
         public EntryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+            return new EntryItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull EntryItemViewHolder holder, int position) {
-
+        public void onBindViewHolder(@NonNull EntryItemViewHolder entryItemViewHolder, int position) {
+            entryItemViewHolder.bindEntryMode(entryModes[position]);
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return entryModes.length;
         }
 
         private class EntryItemViewHolder extends RecyclerView.ViewHolder {
@@ -70,10 +74,26 @@ public class EntryChoiceActivity extends AppCompatActivity {
             private final TextView subtitleView;
 
 
-            public EntryItemViewHolder(@NonNull View itemView, TextView titleView, TextView subtitleView) {
-                super(itemView);
-                this.titleView = titleView;
-                this.subtitleView = subtitleView;
+            public EntryItemViewHolder(@NonNull View view) {
+                super(view);
+                this.titleView = view.findViewById(R.id.entry_title);
+                this.subtitleView = view.findViewById(R.id.entry_subtitle);
+            }
+
+            void bindEntryMode(EntryMode entryMode) {
+                titleView.setText(entryMode.titleResId);
+                subtitleView.setText(entryMode.subtitleResId);
+                itemView.setOnClickListener(view -> {
+                    Activity activity = EntryChoiceActivity.this;
+                    switch (entryMode) {
+                        case ENTRY_JAVA:
+                            activity.startActivity(new Intent(activity, MainActivity.class));
+                            break;
+                        case ENTRY_KOTLIN:
+                            activity.startActivity(new Intent(activity, MainActivity.class));
+                            break;
+                    }
+                });
             }
         }
     }
