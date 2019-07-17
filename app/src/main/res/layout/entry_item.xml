@@ -2,20 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
     android:paddingStart="@dimen/home_page_mode_item_padding_horizontal"
-    android:paddingEnd="@dimen/home_page_mode_item_padding_horizontal">
+    android:paddingEnd="@dimen/home_page_mode_item_padding_horizontal"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/entry_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/home_page_mode_item_title_padding_top"
+        android:paddingBottom="@dimen/home_page_mode_item_title_padding_bottom"
         android:fontFamily="google-sans-medium"
-        android:paddingTop="@dimen/home_page_title_padding_top"
-        android:paddingBottom="@dimen/home_page_title_padding_bottom"
         android:textColor="@color/white"
-        android:textSize="@dimen/home_page_mode_item_title_size" />
+        android:textSize="@dimen/home_page_mode_item_title_size"/>
 
     <TextView
         android:id="@+id/entry_subtitle"
@@ -26,9 +26,9 @@
         android:textColor="@color/home_page_mode_item_subtitle"
         android:textSize="@dimen/home_page_mode_item_subtitle_size"/>
 
-    <view
-        android:layout_width="wrap_content"
+    <View
+        android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
-        android:background="#40FFFFFF" />
+        android:background="#40FFFFFF"/>
 
 </LinearLayout>

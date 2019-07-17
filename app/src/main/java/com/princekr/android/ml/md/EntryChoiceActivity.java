@@ -32,8 +32,8 @@ public class EntryChoiceActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(@Nullable Bundle bundle) {
+        super.onCreate(bundle);
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         setContentView(R.layout.activity_entry_choice);
@@ -55,7 +55,9 @@ public class EntryChoiceActivity extends AppCompatActivity {
         @NonNull
         @Override
         public EntryItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new EntryItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.entry_item, parent, false));
+            return new EntryItemViewHolder(
+                    LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.entry_item, parent, false));
         }
 
         @Override
