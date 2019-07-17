@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.princekr.android.ml.md.java.MainActivity;
+
 public class EntryChoiceActivity extends AppCompatActivity {
 
     private enum EntryMode {
