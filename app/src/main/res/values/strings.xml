@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MLKit Material Android</string>
+    <string name="app_name">MLKit Showcase</string>
+
+    <string name="entry_java_title">Java</string>
+    <string name="entry_java_subtitle">Run the MLKit Showcase written in Java.</string>
+    <string name="entry_kotlin_title">Kotlin</string>
+    <string name="entry_kotlin_subtitle">Run the MLKit Showcase written in kotlin.</string>
+
+
 </resources>
