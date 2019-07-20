@@ -12,7 +12,7 @@
         android:paddingTop="@dimen/home_page_title_padding_top"
         android:paddingBottom="@dimen/home_page_title_padding_bottom"
         android:text="@string/app_name"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/home_page_title_size" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -1,7 +1,14 @@
 package com.princekr.android.ml.md.java;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -36,6 +43,68 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView modeRecyclerView = findViewById(R.id.mode_recycler_view);
         modeRecyclerView.setHasFixedSize(true);
         modeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //modeRecyclerView.setAdapter();
+        modeRecyclerView.setAdapter(new ModeItemAdapter(DetectionMode.values()));
+    }
+
+    private class ModeItemAdapter extends RecyclerView.Adapter<ModeItemAdapter.ModeItemViewHolder> {
+
+        private final DetectionMode[] detectionModes;
+
+        public ModeItemAdapter(DetectionMode[] detectionModes) {
+            this.detectionModes = detectionModes;
+        }
+
+        @NonNull
+        @Override
+        public ModeItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ModeItemViewHolder(
+                    LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.detection_mode_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ModeItemViewHolder modeItemViewHolder, int position) {
+            modeItemViewHolder.bindDetectionMode(detectionModes[position]);
+        }
+
+        @Override
+        public int getItemCount() {
+            return detectionModes.length;
+        }
+
+
+        private class ModeItemViewHolder extends RecyclerView.ViewHolder {
+
+            private final TextView titleView;
+            private final TextView subtitleView;
+
+            public ModeItemViewHolder(@NonNull View view) {
+                super(view);
+                titleView = view.findViewById(R.id.mode_title);
+                subtitleView = view.findViewById(R.id.mode_subtitle);
+            }
+
+            void bindDetectionMode(DetectionMode detectionMode) {
+                titleView.setText(detectionMode.titleRestId);
+                subtitleView.setText(detectionMode.subtitleResId);
+                itemView.setOnClickListener(
+                        view -> {
+                            Activity activity = MainActivity.this;
+                            switch (detectionMode) {
+                                case ODT_LIVE:
+                                    activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
+                                    break;
+                                case ODT_STATIC:
+                                    activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
+                                    break;
+                                case BARCODE_LIVE:
+                                    activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
+                                    break;
+                            }
+                        }
+                );
+            }
+        }
+
     }
 }

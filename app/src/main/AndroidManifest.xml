@@ -34,8 +34,12 @@
         <activity
             android:name=".java.MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".java.LiveBarcodeScanningActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
