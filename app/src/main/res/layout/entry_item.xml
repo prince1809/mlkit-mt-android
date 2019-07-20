@@ -14,7 +14,7 @@
         android:paddingTop="@dimen/home_page_mode_item_title_padding_top"
         android:paddingBottom="@dimen/home_page_mode_item_title_padding_bottom"
         android:fontFamily="google-sans-medium"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="@dimen/home_page_mode_item_title_size"/>
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/home_page_mode_item_subtitle_padding_bottom"
         android:fontFamily="sans-serif"
-        android:textColor="@color/home_page_mode_item_subtitle"
+        android:textColor="@color/black"
         android:textSize="@dimen/home_page_mode_item_subtitle_size"/>
 
     <View
