@@ -1,9 +1,14 @@
 package com.princekr.android.ml.md.java.camera;
 
+import android.content.Context;
 import android.graphics.Camera;
 import android.hardware.Camera.CameraInfo;
 
 import com.google.android.gms.common.images.Size;
+
+import java.nio.ByteBuffer;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class CameraSource {
 
@@ -20,7 +25,39 @@ public class CameraSource {
      * frames become available from the camera.
      */
     private Thread processingThread;
+    private final FrameProcessingRunnable processingRunnable = new FrameProcessingRunnable();
 
+
+    private final Object processorLock = new Object();
+
+    /**
+     * Map to convert between a byte array, received from the camera, and its associated byte buffer.
+     * We use byte buffers internally because this is a  more efficient way to call into native code
+     * later (avoids a potential copy).
+     *
+     * <p><b>Note:</b> uses IdentityHashMap here instead of HashMap because the behavior of an array's
+     * equals, hashCode and toString method is both useless and unexpected. IdentityHashMap enforces
+     * identity ('==') check on the keys.
+     */
+    private final Map<byte[], ByteBuffer> bytesToByteBuffer = new IdentityHashMap<>();
+
+    private final Context context;
+    private final GraphicOverlay graphicOverlay;
+
+    public CameraSource(GraphicOverlay graphicOverlay) {
+        this.context = graphicOverlay.getContext();
+        this.graphicOverlay = graphicOverlay;
+    }
+
+
+    /**
+     * Return the preview size that is currently used by the underlying camera.
+     *
+     * @return
+     */
+    Size getPreviewSize() {
+        return previewSize;
+    }
 
     /**
      * This runnable controls access to the underlying receiver, calling it to process when
