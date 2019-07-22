@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity {
                             Activity activity = MainActivity.this;
                             switch (detectionMode) {
                                 case ODT_LIVE:
-                                    activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
+                                    activity.startActivity(new Intent(activity, LiveObjectDetectionActivity.class));
                                     break;
                                 case ODT_STATIC:
-                                    activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
+                                    Utils.openImagePicker(activity);
                                     break;
                                 case BARCODE_LIVE:
                                     activity.startActivity(new Intent(activity, LiveBarcodeScanningActivity.class));
