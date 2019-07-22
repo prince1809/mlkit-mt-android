@@ -42,9 +42,9 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
 
         setContentView(R.layout.activity_live_barcode);
         preview = findViewById(R.id.camera_preview);
-//        graphicOverlay = findViewById(R.id.camera_preview_graphic_overlay);
-//        graphicOverlay.setOnClickListener(this);
-//        cameraSource = new CameraSource(graphicOverlay);
+        graphicOverlay = findViewById(R.id.camera_preview_graphic_overlay);
+        graphicOverlay.setOnClickListener(this);
+        cameraSource = new CameraSource(graphicOverlay);
 
         promptChip = findViewById(R.id.bottom_prompt_chip);
         promptChipAnimator = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.bottom_prompt_chip_enter);

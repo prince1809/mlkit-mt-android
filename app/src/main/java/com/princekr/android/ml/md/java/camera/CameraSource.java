@@ -1,12 +1,15 @@
 package com.princekr.android.ml.md.java.camera;
 
 import android.content.Context;
-import android.graphics.Camera;
+import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.view.SurfaceHolder;
 
 import com.google.android.gms.common.images.Size;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.security.Policy;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -49,6 +52,14 @@ public class CameraSource {
         this.graphicOverlay = graphicOverlay;
     }
 
+    synchronized void start(SurfaceHolder surfaceHolder) throws IOException {
+        if (camera != null) {
+            return;
+        }
+
+        camera = createCamera();
+    }
+
 
     /**
      * Return the preview size that is currently used by the underlying camera.
@@ -57,6 +68,29 @@ public class CameraSource {
      */
     Size getPreviewSize() {
         return previewSize;
+    }
+
+    /**
+     * Opens the camera and applies the user settings
+     *
+     * @return
+     * @throws IOException
+     */
+    private Camera createCamera() throws IOException {
+        Camera camera = Camera.open();
+        if (camera == null) {
+            throw new IOException("There is no back-facing camera");
+        }
+
+        Camera.Parameters parameters = camera.getParameters();
+
+
+        return camera;
+    }
+
+    private void setPreviewAndPictureSize(Camera camera, Policy.Parameters parameters) throws IOException {
+        // Gives priority to tge preview size specified by the user if exists.
+        //CameraSizePair sizePair
     }
 
     /**

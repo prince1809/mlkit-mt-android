@@ -46,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
         modeRecyclerView.setAdapter(new ModeItemAdapter(DetectionMode.values()));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private class ModeItemAdapter extends RecyclerView.Adapter<ModeItemAdapter.ModeItemViewHolder> {
 
         private final DetectionMode[] detectionModes;
