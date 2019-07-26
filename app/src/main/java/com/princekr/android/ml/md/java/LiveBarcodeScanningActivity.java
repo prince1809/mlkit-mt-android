@@ -2,6 +2,7 @@ package com.princekr.android.ml.md.java;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,12 +19,13 @@ import com.princekr.android.ml.md.java.camera.CameraSourcePreview;
 import com.princekr.android.ml.md.java.camera.GraphicOverlay;
 import com.princekr.android.ml.md.java.camera.WorkflowModel;
 import com.princekr.android.ml.md.java.camera.WorkflowModel.WorkflowState;
+import com.princekr.android.ml.md.java.settings.SettingsActivity;
 
 import java.util.Objects;
 
 public class LiveBarcodeScanningActivity extends AppCompatActivity implements OnClickListener {
 
-    private static final String TAG = "LiveBarcodeScanningActi";
+    private static final String TAG = "LiveBarcodeActivity";
 
     private CameraSource cameraSource;
     private CameraSourcePreview preview;
@@ -70,6 +72,22 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
     @Override
     public void onClick(View view) {
         Log.d(TAG, "onClick: started");
+        int id = view.getId();
+        if (id == R.id.close_button) {
+            onBackPressed();
+        } else if (id == R.id.flash_button) {
+            if (flashButton.isSelected()) {
+                flashButton.setSelected(false);
+                //cameraSource.update
+            } else {
+                flashButton.setSelected(true);
+                //cameraSource.upate
+            }
+        } else if (id == R.id.settings_button) {
+            // set as disabled to prevent the user from clicking on it too fast.
+            settingsButton.setEnabled(false);
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
     }
 
     private void startCameraPreview() {

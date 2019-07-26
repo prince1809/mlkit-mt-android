@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/pref_category_camera">
+        <ListPreference
+            android:key="@string/pref_key_rear_camera_preview_size"
+            android:persistent="true"
+            android:title="@string/pref_title_rear_camera_preview_size" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_object_detection">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/pref_key_object_detector_enable_multiple_objects"
+            android:persistent="true"
+            android:title="@string/pref_title_object_detector_enable_multiple_objects" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

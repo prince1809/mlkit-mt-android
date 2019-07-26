@@ -27,8 +27,21 @@
     <string name="prompt_hold_camera_steady">Keep camera still for a moment</string>
     <string name="prompt_move_camera_closer">Move closer to search</string>
     <string name="prompt_searching">Searching&#8230;</string>
-
     <string name="product_search_button">Search object</string>
+
+
+    <!-- Strings for camera settings. -->
+    <string name="pref_category_camera">Camera</string>
+    <string name="pref_key_rear_camera_preview_size" translatable="false">rcpvs</string>
+    <string name="pref_key_rear_camera_picture_size" translatable="false">rcpts</string>
+    <string name="pref_title_rear_camera_preview_size">Rear camera preview size</string>
+
+    <!-- Strings for object detection settings -->
+    <string name="pref_category_object_detection">Object detection</string>
+    <string name="pref_key_object_detector_enable_multiple_objects" translatable="false">odema</string>
+    <string name="pref_title_object_detector_enable_multiple_objects">Enable multiple objects</string>
+    <string name="pref_key_object_detector_enable_classification" translatable="false">odec</string>
+    <string name="pref_title_object_detector_enable_classification">Enable classification</string>
 
 
 </resources>
