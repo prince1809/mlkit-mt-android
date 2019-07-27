@@ -32,6 +32,7 @@ public class CameraSource {
 
 
     private final Object processorLock = new Object();
+    private FrameProcessor frameProcessor;
 
     /**
      * Map to convert between a byte array, received from the camera, and its associated byte buffer.
@@ -52,12 +53,36 @@ public class CameraSource {
         this.graphicOverlay = graphicOverlay;
     }
 
+    /**
+     * Opens the camera and start sending preview frames to the underlying detector.
+     *
+     * @param surfaceHolder
+     * @throws IOException
+     */
     synchronized void start(SurfaceHolder surfaceHolder) throws IOException {
         if (camera != null) {
             return;
         }
 
         camera = createCamera();
+    }
+
+
+    synchronized void stop() {
+
+    }
+
+    /**
+     * Stops the camera and releases the resources of the camera and underlying detector.
+     */
+    public void release() {
+        graphicOverlay.clear();
+        synchronized (processorLock) {
+            stop();
+            if (frameProcessor != null) {
+                frameProcessor.stop();
+            }
+        }
     }
 
 

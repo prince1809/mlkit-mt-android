@@ -21,6 +21,7 @@ import com.princekr.android.ml.md.java.camera.WorkflowModel;
 import com.princekr.android.ml.md.java.camera.WorkflowModel.WorkflowState;
 import com.princekr.android.ml.md.java.settings.SettingsActivity;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class LiveBarcodeScanningActivity extends AppCompatActivity implements OnClickListener {
@@ -66,7 +67,10 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
     protected void onResume() {
         super.onResume();
 
-        //workflowModel.markCameraFrozen();
+        workflowModel.markCameraFrozen();
+        settingsButton.setEnabled(true);
+        currentWorkflowState = WorkflowState.NOT_STARTED;
+        workflowModel.setWorkflowState(WorkflowState.DETECTING);
     }
 
     @Override
@@ -91,7 +95,16 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
     }
 
     private void startCameraPreview() {
-        if (!workflowModel.isCameraLive()) {
+        Log.d(TAG, "startCameraPreview: started");
+        if (!workflowModel.isCameraLive() && cameraSource != null) {
+            try {
+                workflowModel.markCameraLive();
+                preview.start(cameraSource);
+            } catch (IOException e) {
+                Log.e(TAG, "startCameraPreview: failed to start camera preview", e);
+                cameraSource.release();
+                cameraSource = null;
+            }
 
         }
     }
@@ -101,6 +114,8 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
     }
 
     private void setupWorkflowMode() {
+
+        Log.d(TAG, "setupWorkflowMode: started");
         workflowModel = ViewModelProviders.of(this).get(WorkflowModel.class);
 
         // Observes the workflow state changes, if happens, update the overlay view indicators and
@@ -114,9 +129,13 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
 
                     currentWorkflowState = workflowState;
                     Log.d(TAG, "Current workflow state: " + currentWorkflowState.name());
+                    boolean wasPromptChipGone = (promptChip.getVisibility() == View.GONE);
 
                     switch (workflowState) {
                         case DETECTING:
+                            promptChip.setVisibility(View.VISIBLE);
+                            promptChip.setText(R.string.prompt_point_at_a_barcode);
+                            startCameraPreview();
                             break;
                         case CONFIRMING:
                             break;
@@ -129,7 +148,11 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
                             break;
                     }
 
-                    //boolean
+                    boolean shouldPlayPromptChipEnteringAnimation =
+                            wasPromptChipGone && (promptChip.getVisibility() == View.VISIBLE);
+                    if (shouldPlayPromptChipEnteringAnimation && !promptChipAnimator.isRunning()) {
+                        promptChipAnimator.start();
+                    }
                 });
     }
 }
