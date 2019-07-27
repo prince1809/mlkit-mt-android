@@ -3,6 +3,7 @@ package com.princekr.android.ml.md.java;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.chip.Chip;
 import com.princekr.android.ml.md.R;
 import com.princekr.android.ml.md.java.barcodedetection.BarcodeField;
+import com.princekr.android.ml.md.java.barcodedetection.BarcodeProcessor;
 import com.princekr.android.ml.md.java.barcodedetection.BarcodeResultFragment;
 import com.princekr.android.ml.md.java.camera.CameraSource;
 import com.princekr.android.ml.md.java.camera.CameraSourcePreview;
@@ -76,8 +78,30 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
         workflowModel.markCameraFrozen();
         settingsButton.setEnabled(true);
         currentWorkflowState = WorkflowState.NOT_STARTED;
-       // cameraSource.setFrameProcessor(new BarcodeProcessor());
+        cameraSource.setFrameProcessor(new BarcodeProcessor(graphicOverlay, workflowModel));
         workflowModel.setWorkflowState(WorkflowState.DETECTING);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        BarcodeResultFragment.dismiss(getSupportFragmentManager());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentWorkflowState = WorkflowState.NOT_STARTED;
+        stopCameraPreview();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cameraSource != null) {
+            cameraSource.release();
+            cameraSource = null;
+        }
     }
 
     @Override
@@ -89,10 +113,10 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
         } else if (id == R.id.flash_button) {
             if (flashButton.isSelected()) {
                 flashButton.setSelected(false);
-                //cameraSource.update
+                cameraSource.updateFlashMode(Camera.Parameters.FLASH_MODE_OFF);
             } else {
                 flashButton.setSelected(true);
-                //cameraSource.upate
+                cameraSource.updateFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             }
         } else if (id == R.id.settings_button) {
             // set as disabled to prevent the user from clicking on it too fast.
@@ -117,7 +141,11 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
     }
 
     private void stopCameraPreview() {
-
+        if (workflowModel.isCameraLive()) {
+            workflowModel.markCameraFrozen();
+            flashButton.setSelected(false);
+            preview.stop();
+        }
     }
 
     private void setupWorkflowMode() {
