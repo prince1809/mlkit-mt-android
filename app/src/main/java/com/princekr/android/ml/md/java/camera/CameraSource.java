@@ -108,6 +108,17 @@ public class CameraSource {
     }
 
 
+    public void setFrameProcessor(FrameProcessor processor) {
+        graphicOverlay.clear();
+        synchronized (processorLock) {
+            if (frameProcessor != null) {
+                frameProcessor.stop();
+            }
+            frameProcessor = processor;
+        }
+    }
+
+
     /**
      * Return the preview size that is currently used by the underlying camera.
      *
@@ -124,6 +135,7 @@ public class CameraSource {
      * @throws IOException
      */
     private Camera createCamera() throws IOException {
+        Log.d(TAG, "createCamera: started");
         Camera camera = Camera.open();
         if (camera == null) {
             throw new IOException("There is no back-facing camera");
@@ -131,6 +143,21 @@ public class CameraSource {
 
         Camera.Parameters parameters = camera.getParameters();
         setPreviewAndPictureSize(camera, parameters);
+
+        int[] previewFpsRange = selectPreviewFpsRange(camera);
+        if (previewFpsRange == null) {
+            throw new IOException("Could not find suitable preview frames per second range");
+        }
+
+        parameters.setPreviewFpsRange(previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+        parameters.setPreviewFormat(IMAGE_FORMAT);
+
+        if (parameters.getSupportedFocusModes().contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        } else {
+            Log.i(TAG, "Camera auto focus is not supported on this device.");
+        }
 
 
         camera.setParameters(parameters);
@@ -231,6 +258,36 @@ public class CameraSource {
         }
 
         return selectedPair;
+    }
+
+
+    /**
+     * Selects the most suitable preview frames per second range.
+     *
+     * @param camera the camera to select a frames per second range from
+     * @return the selected preview frames per second range
+     */
+    private static int[] selectPreviewFpsRange(Camera camera) {
+        // The camera API uses integers scaled by a factor of 1000 instead of floating-point frame
+        // rates.
+        int desiredPreviewFpsScaled = (int) (REQUESTED_CAMERA_FPS * 1000f);
+
+        // The methods for selecting the best range is to minimize the sum of the differences between
+        // the desired value and the upper and lower bounds of the range. This may select a range
+        // that the desired value is outside of, but this is often preferred. For example, if the
+        // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the range (15, 30).
+        int[] selectedFpsRange = null;
+        int minDiff = Integer.MAX_VALUE;
+        for (int[] range : camera.getParameters().getSupportedPreviewFpsRange()) {
+            int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+            int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
+            int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
+            if (diff < minDiff) {
+                selectedFpsRange = range;
+                minDiff = diff;
+            }
+        }
+        return selectedFpsRange;
     }
 
     /**

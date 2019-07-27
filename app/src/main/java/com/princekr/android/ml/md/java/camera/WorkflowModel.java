@@ -7,11 +7,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.princekr.android.ml.md.java.objectdetection.DetectedObject;
 import com.princekr.android.ml.md.java.productsearch.Product;
 import com.princekr.android.ml.md.java.productsearch.SearchEngine;
+import com.princekr.android.ml.md.java.productsearch.SearchedObject;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +37,12 @@ public class WorkflowModel extends AndroidViewModel implements SearchEngine.Sear
     }
 
     public final MutableLiveData<WorkflowState> workflowState = new MutableLiveData<>();
+    public final MutableLiveData<DetectedObject> objectToSearch = new MutableLiveData<>();
+    public final MutableLiveData<SearchedObject> searchedObject = new MutableLiveData<>();
+
+    public final MutableLiveData<FirebaseVisionBarcode> detectedBarCode = new MutableLiveData<>();
+
+    private final Set<Integer> objectIdsToSearch = new HashSet<>();
 
     private boolean isCameraLive = false;
     @Nullable

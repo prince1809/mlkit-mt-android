@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.chip.Chip;
 import com.princekr.android.ml.md.R;
+import com.princekr.android.ml.md.java.barcodedetection.BarcodeField;
+import com.princekr.android.ml.md.java.barcodedetection.BarcodeResultFragment;
 import com.princekr.android.ml.md.java.camera.CameraSource;
 import com.princekr.android.ml.md.java.camera.CameraSourcePreview;
 import com.princekr.android.ml.md.java.camera.GraphicOverlay;
@@ -22,8 +24,12 @@ import com.princekr.android.ml.md.java.camera.WorkflowModel.WorkflowState;
 import com.princekr.android.ml.md.java.settings.SettingsActivity;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Demonstrates the barcode scanning workflow using camera preview
+ */
 public class LiveBarcodeScanningActivity extends AppCompatActivity implements OnClickListener {
 
     private static final String TAG = "LiveBarcodeActivity";
@@ -70,6 +76,7 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
         workflowModel.markCameraFrozen();
         settingsButton.setEnabled(true);
         currentWorkflowState = WorkflowState.NOT_STARTED;
+       // cameraSource.setFrameProcessor(new BarcodeProcessor());
         workflowModel.setWorkflowState(WorkflowState.DETECTING);
     }
 
@@ -138,13 +145,22 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
                             startCameraPreview();
                             break;
                         case CONFIRMING:
+                            promptChip.setVisibility(View.VISIBLE);
+                            promptChip.setText(R.string.prompt_move_camera_closer);
+                            startCameraPreview();
                             break;
                         case SEARCHING:
+                            promptChip.setVisibility(View.VISIBLE);
+                            promptChip.setText(R.string.prompt_searching);
+                            stopCameraPreview();
                             break;
                         case DETECTED:
                         case SEARCHED:
+                            promptChip.setVisibility(View.GONE);
+                            stopCameraPreview();
                             break;
                         default:
+                            promptChip.setVisibility(View.GONE);
                             break;
                     }
 
@@ -154,5 +170,16 @@ public class LiveBarcodeScanningActivity extends AppCompatActivity implements On
                         promptChipAnimator.start();
                     }
                 });
+
+        workflowModel.detectedBarCode.observe(
+                this,
+                barcode -> {
+                    if (barcode != null) {
+                        ArrayList<BarcodeField> barcodeFieldList = new ArrayList<>();
+                        barcodeFieldList.add(new BarcodeField("Raw Value", barcode.getRawValue()));
+                        BarcodeResultFragment.show(getSupportFragmentManager(), barcodeFieldList);
+                    }
+                }
+        );
     }
 }
